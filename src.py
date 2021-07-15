@@ -5,10 +5,17 @@ DEPTH = 2
 def adj_tab( V , E , direc ):
 
     tab = { u:[] for u in V }
+    added = set()
 
     def f1( u , v ):
+
+        if ( v , u ) in added:
+            return
+
         tab[ u ].append( v )
         tab[ v ].append( u )
+
+        added.add( ( u , v ) )
 
     def f2( u , v ):
         tab[ u ].append( v )
@@ -18,6 +25,18 @@ def adj_tab( V , E , direc ):
         f( u , v )
 
     return tab
+
+def print_adj_tab( tab ):
+
+    nodes = list( tab.keys() )
+    nodes.sort()
+
+    for u in nodes:
+
+        neigh = tab[ u ].copy()
+        neigh.sort()
+
+        print( str( u ) , "|" , " ".join( map( str , neigh ) ) )
 
 def depth_tab( V , E , direc ):
 
@@ -56,6 +75,12 @@ def depth_tab( V , E , direc ):
             dtab[ v ][ DEPTH ] = dtab[ u ][ DEPTH ] + 1
     return dtab
 
+def print_depth_tab( dtab ):
+
+    nodes = list( dtab.keys() )
+    nodes.sort( )
+
+    for u in nodes:
 
 
 def build_dfstimeline( dep_tab ):
@@ -70,7 +95,10 @@ def test_graph( ):
         ( 0 , 1 ),
         ( 0 , 2 ),
         ( 0 , 4 ),
+        ( 1 , 0 ),
         ( 1 , 2 ),
+        ( 1 , 4 ),
+        ( 2 , 1 ),
         ( 2 , 3 ),
         ( 2 , 4 ),
         ( 3 , 4 )
