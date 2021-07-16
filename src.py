@@ -24,6 +24,9 @@ def adj_tab( V , E , direc ):
     for u , v in E:
         f( u , v )
 
+    for u in V:
+        tab[ u ].sort()
+
     return tab
 
 def print_adj_tab( tab ):
@@ -34,37 +37,38 @@ def print_adj_tab( tab ):
     for u in nodes:
 
         neigh = tab[ u ].copy()
-        neigh.sort()
+        # neigh.sort()
 
         print( str( u ) , "|" , " ".join( map( str , neigh ) ) )
 
 def depth_tab( V , E , direc ):
 
     adj  = adj_tab( V , E , direc )
+    for u in V:
+        adj[ u ].reverse()
 
     seq = [ -1 ]*3
     dtab = { u : seq.copy() for u in V }
     
     stack = []
     unvisited = V.copy()
+    global clock
     clock = -1
 
-    def mark_visit( u , v ):
+    def mark_visit( v ):
 
+        global clock
         clock += 1
         dtab[ v ][ START ] = clock
-
-        # previous depth
-        p_depth = -1 if ( u is None ) else dtab[ u ][ DEPTH ]
-        dtab[ v ][ CLOCK ] = p_depth + 1 
-
+        dtab[ v ][ DEPTH ] = len( stack ) 
         stack.append( v )
-        unvisited.remove( v )
+        if dtab[ v ][ DEPTH ]:
+            unvisited.remove( v )
 
     while unvisited:
 
         v = unvisited.pop()
-        mark_visit( None , v )
+        mark_visit( v )
 
         while stack:
 
@@ -79,7 +83,7 @@ def depth_tab( V , E , direc ):
             if not( v in unvisited ):
                 continue
 
-            mark_visited( u , v )
+            mark_visit( v )
 
     return dtab
             
@@ -89,27 +93,46 @@ def print_depth_tab( dtab ):
     nodes.sort( )
 
     for u in nodes:
-        print( str( u ) , "|"  ," ".join( map( str , dtab( u ) )
+        print( str( u ) , "|"  ," ".join( map( str , dtab[ u ] ) ) )
+    
+    pass
 
 def build_dfstimeline( dep_tab ):
-    pass
+
+    f1 = lambda x: dep_tab[ x ][ END ] + 1
+    width = max( map( f1 , dep_tab.keys() ) )
+
+    f2 = lambda x: dep_tab[ x ][ DEPTH ]
+    depth  = max( map( f2 , dep_tab.keys() ) )
+
+    mat = [ [ " " ]*width ]*depth
+    for node , ( s , e , d ) in dep_tab.items( ):
+        mat[ d ][ s : e + 1 ] = str( node )
+
+    s = "\n".join( [ "".join( mat[ i ][:] ) for i in range( depth ) ] )
+    return s
 
 # Tests -----------------------------------------------------------------------
 
 def test_graph( ):
 
-    V = set( list( range( 5 ) ) )
+    V = set( list( range( 8 ) ) )
     E = set( [ 
         ( 0 , 1 ),
         ( 0 , 2 ),
         ( 0 , 4 ),
-        ( 1 , 0 ),
-        ( 1 , 2 ),
-        ( 1 , 4 ),
+        ( 1 , 5 ),
         ( 2 , 1 ),
         ( 2 , 3 ),
-        ( 2 , 4 ),
-        ( 3 , 4 )
+        ( 3 , 4 ),
+        ( 3 , 7 ),
+        ( 4 , 1 ),
+        ( 4 , 2 ),
+        ( 4 , 7 ),
+        ( 5 , 7 ),
+        ( 6 , 0 ),
+        ( 6 , 2 ),
+        ( 6 , 5 )
         ] )
 
     return V , E
@@ -127,12 +150,18 @@ def test_1( ):
         print( "Grafo " + t )
         
         print( "\nTabela de Adj:\n" )
-        tab = adj_tab( V , E , direc )
+        tab = adj_tab( V , E , d )
         print_adj_tab( tab )
 
         print( "\nTabela de prof:\n" )
-        dpth = depth_tab( V , E , direc )
+        dpth = depth_tab( V , E , d )
         print_depth_tab( dpth )
+        
+        print( "\nLinha do tempo: \n" )
+        s = build_dfstimeline( dpth )
+        print( s )
+
+        break
 
 if __name__ == "__main__":
 
