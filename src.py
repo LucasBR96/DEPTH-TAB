@@ -47,13 +47,24 @@ def depth_tab( V , E , direc ):
     
     stack = []
     unvisited = V.copy()
-    clock = 0
+    clock = -1
+
+    def mark_visit( u , v ):
+
+        clock += 1
+        dtab[ v ][ START ] = clock
+
+        # previous depth
+        p_depth = -1 if ( u is None ) else dtab[ u ][ DEPTH ]
+        dtab[ v ][ CLOCK ] = p_depth + 1 
+
+        stack.append( v )
+        unvisited.remove( v )
+
     while unvisited:
 
-        u = unvisited.pop() 
-        stack.append( u )
-        dtab[ u ][ START ] = clock
-        dtab[ u ][ DEPTH ] = 0
+        v = unvisited.pop()
+        mark_visit( None , v )
 
         while stack:
 
@@ -67,21 +78,18 @@ def depth_tab( V , E , direc ):
             v = adj[ u ].pop()
             if not( v in unvisited ):
                 continue
-            
-            clock += 1
-            unvisited.remove( v )
-            stack.append( v )
-            dtab[ v ][ START ] = clock
-            dtab[ v ][ DEPTH ] = dtab[ u ][ DEPTH ] + 1
-    return dtab
 
+            mark_visited( u , v )
+
+    return dtab
+            
 def print_depth_tab( dtab ):
 
     nodes = list( dtab.keys() )
     nodes.sort( )
 
     for u in nodes:
-
+        print( str( u ) , "|"  ," ".join( map( str , dtab( u ) )
 
 def build_dfstimeline( dep_tab ):
     pass
@@ -108,29 +116,23 @@ def test_graph( ):
 
 def test_1( ):
 
-    def print_adj( direc ):
-        V , E = test_graph( )
-        adj = adj_tab( V , E , direc )
-
-        for u , neigh in adj.items():
-
-            s1 = str( u )
-            s2 = " ".join( map( str , neigh ) )
-            print( s1 , s2 , sep = " | " )
-
     div = "-"*50
-    
-    print( div )
-    print( "Grafo Direcionado" )
-    print()
-    print_adj( True )
-    print()
+    V , E = test_graph()
 
-    print( div )
-    print( "Grafo não Direcionado" )
-    print()
-    print_adj( False )
-    print()
+    titulos = [ "Direcionado" , "não Direcionado" ]
+    direc   = [ True , False ]
+
+    for t , d in zip( titulos , direc ):
+        print( div )
+        print( "Grafo " + t )
+        
+        print( "\nTabela de Adj:\n" )
+        tab = adj_tab( V , E , direc )
+        print_adj_tab( tab )
+
+        print( "\nTabela de prof:\n" )
+        dpth = depth_tab( V , E , direc )
+        print_depth_tab( dpth )
 
 if __name__ == "__main__":
 
