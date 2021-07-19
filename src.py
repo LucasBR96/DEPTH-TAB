@@ -104,12 +104,22 @@ def build_dfstimeline( dep_tab ):
 
     f2 = lambda x: dep_tab[ x ][ DEPTH ]
     depth  = max( map( f2 , dep_tab.keys() ) )
-
-    mat = [ [ " " ]*width ]*depth
+    
+    seq =[ " " ]*width
+    mat = [ seq.copy() for x in range( depth + 1 ) ]
+    # print( *mat, sep = "\n" )
     for node , ( s , e , d ) in dep_tab.items( ):
-        mat[ d ][ s : e + 1 ] = str( node )
+        nstr = str( node )
+        # print( node , s , e , d )
+        # print( mat[ d ] )
+        # print()
+        for i in range( s , e ):
+            if i == s or i == e - 1:
+                mat[ d ][ i ] = nstr
+                continue
+            mat[ d ][ i ] = "-"
 
-    s = "\n".join( [ "".join( mat[ i ][:] ) for i in range( depth ) ] )
+    s = "\n".join( [ "".join( mat[ i ][:] ) for i in range( depth + 1 ) ] )
     return s
 
 # Tests -----------------------------------------------------------------------
@@ -161,7 +171,6 @@ def test_1( ):
         s = build_dfstimeline( dpth )
         print( s )
 
-        break
 
 if __name__ == "__main__":
 
