@@ -40,8 +40,8 @@ def build_from_cmd( ):
             E = E | { ( a , b ) } 
 
 
-    # return ( m == 1 ) , V , E
-    print ( V , E )
+    return ( m == 1 ) , V , E
+    # print ( V , E )
 
 def main( arglst ):
     
@@ -52,9 +52,7 @@ def main( arglst ):
         filename = arglst[ 2 ]
         direc , V , E = build_from_file( filename )
     
-   #  try: 
-   #      src.dfs_results(V , E, direc )
-   #  except:
-   #      print( "*" )
+    src.dfs_results(V , E, direc )
+
 if __name__ == "__main__":
     main( sys.argv )

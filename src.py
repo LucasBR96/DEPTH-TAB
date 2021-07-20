@@ -124,12 +124,15 @@ def build_dfstimeline( dep_tab ):
 
 def dfs_results( V , E , direc  ): 
     
+    if not V: return
+    
+    print( "-"*25 )
     print( "\nTabela de Adj:\n" )
-    tab = adj_tab( V , E , d )
+    tab = adj_tab( V , E , direc )
     print_adj_tab( tab )
 
     print( "\nTabela de prof:\n" )
-    dpth = depth_tab( V , E , d )
+    dpth = depth_tab( V , E , direc )
     print_depth_tab( dpth )
     
     print( "\nLinha do tempo: \n" )
