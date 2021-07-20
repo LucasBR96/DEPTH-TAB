@@ -19,8 +19,8 @@ def build_from_cmd( ):
 
     #getting the edges -------------------------------------------------------------------------
     print( "\ngive the edges" )
-    print( "each edge should be two lotercase ASCII chars separated by a single space\n" )
-    print( "input -1 to stop insertion" )
+    print( "each edge should be two lotercase ASCII chars separated by a single space" )
+    print( "input -1 to stop insertion\n" )
 
     V = set()
     E = set()
@@ -33,22 +33,28 @@ def build_from_cmd( ):
         
         a , b = s.split()
         V = V | set( [ a , b ] )
+        
+        c1 = ( m == 0 )
+        c2 = ( ( b , a ) in E )
+        if ( c1 and not c2 ) or not c1: 
+            E = E | { ( a , b ) } 
 
-        if ( b , a ) not in E:
-            E = E | { ( a , b ) }
 
-    return ( m == 1 ) , V , E
+    # return ( m == 1 ) , V , E
+    print ( V , E )
 
 def main( arglst ):
     
-    option == arglst[ 0 ]
+    option = arglst[ 1 ]
     if option == "-c": # read graph from commmand line ------------------------------------------
         direc , V , E = build_from_cmd()
     elif option == "-f": # read graph from file -------------------------------------------------
-        filename = arglst[ 1 ]
+        filename = arglst[ 2 ]
         direc , V , E = build_from_file( filename )
     
-    src.dfs_results()
-
+   #  try: 
+   #      src.dfs_results(V , E, direc )
+   #  except:
+   #      print( "*" )
 if __name__ == "__main__":
     main( sys.argv )
