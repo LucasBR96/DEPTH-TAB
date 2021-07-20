@@ -122,6 +122,20 @@ def build_dfstimeline( dep_tab ):
     s = "\n".join( [ "".join( mat[ i ][:] ) for i in range( depth + 1 ) ] )
     return s
 
+def dfs_results( V , E , direc  ): 
+    
+    print( "\nTabela de Adj:\n" )
+    tab = adj_tab( V , E , d )
+    print_adj_tab( tab )
+
+    print( "\nTabela de prof:\n" )
+    dpth = depth_tab( V , E , d )
+    print_depth_tab( dpth )
+    
+    print( "\nLinha do tempo: \n" )
+    s = build_dfstimeline( dpth )
+    print( s )
+
 # Tests -----------------------------------------------------------------------
 
 def test_graph( ):
@@ -159,18 +173,7 @@ def test_1( ):
         print( div )
         print( "Grafo " + t )
         
-        print( "\nTabela de Adj:\n" )
-        tab = adj_tab( V , E , d )
-        print_adj_tab( tab )
-
-        print( "\nTabela de prof:\n" )
-        dpth = depth_tab( V , E , d )
-        print_depth_tab( dpth )
-        
-        print( "\nLinha do tempo: \n" )
-        s = build_dfstimeline( dpth )
-        print( s )
-
+        dfs_results( V , E , direc )
 
 if __name__ == "__main__":
 
