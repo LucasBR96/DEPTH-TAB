@@ -5,16 +5,16 @@ DEPTH = 2
 def adj_tab( V , E , direc, sort_by = lambda x:x  ):
     
     '''
-    Returns the adjency matrix of a given graph. I.E an table where each row have a node of the graph and a list 
-    of its neighbors.
+    Returns the adjency table of a given graph. I.E a hash map with every node of the graph as a key
+    and the list of all of its neighbors for the corresponding value.
 
-    The graph must be given as two Sets.
+    The graph must be given with two sets.
         V -> the set of nodes
         E -> the set of edges
 
     direc is a boolean that indicates if the graph is directed or not
 
-    optinal argument key is for sorting the adjency list of each node by some distinct atribute.
+    optional argument key is for sorting the adjency list of each node by some distinct atribute.
     '''
 
     tab = { u:[] for u in V }
@@ -63,8 +63,8 @@ def print_adj_tab( tab ):
 def depth_tab( V , E , direc ):
 
     '''
-    The depth tab is short for depth table. which is a table resulted from a serch in depth executed over a given
-    graph. Each entry have a node from de graph as index, and the colums are:
+    The depth tab is short for depth table, a hashmap originating from a search in depth executed over a given
+    graph. Each entry have a node from de graph as key, and the corresp values are the triplets.
 
         Start -> The moment during the search when the given node and its descendants begin to be explored.
         End   -> The instant when the node is done. I.E all its descendants were explored.
