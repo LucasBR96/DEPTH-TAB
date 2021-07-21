@@ -2,11 +2,25 @@ START = 0
 END   = 1
 DEPTH = 2
 
-def adj_tab( V , E , direc ):
+def adj_tab( V , E , direc, sort_by = lambda x:x  ):
+    
+    '''
+    Returns the adjency matrix of a given graph. I.E an table where each row have a node of the graph and a list 
+    of its neighbors.
+
+    The graph must be given as two Sets.
+        V -> the set of nodes
+        E -> the set of edges
+
+    direc is a boolean that indicates if the graph is directed or not
+
+    optinal argument key is for sorting the adjency list of each node by some distinct atribute.
+    '''
 
     tab = { u:[] for u in V }
     added = set()
 
+    # Graph is undirected, so the edge ( v , u ) is a duplicate of edge ( v , u ) ------------------------------
     def f1( u , v ):
 
         if ( v , u ) in added:
@@ -16,7 +30,8 @@ def adj_tab( V , E , direc ):
         tab[ v ].append( u )
 
         added.add( ( u , v ) )
-
+    
+    # Graph is directed, so edges ( v , u ) and ( u , v ) are considered distinct from each other -------------
     def f2( u , v ):
         tab[ u ].append( v )
     
@@ -25,11 +40,15 @@ def adj_tab( V , E , direc ):
         f( u , v )
 
     for u in V:
-        tab[ u ].sort()
+        tab[ u ].sort( key = sort_by )
 
     return tab
 
 def print_adj_tab( tab ):
+    
+    '''
+    representation of a given adj tab, rows are sorted by nodes in ascending order
+    '''
 
     nodes = list( tab.keys() )
     nodes.sort()
@@ -43,10 +62,27 @@ def print_adj_tab( tab ):
 
 def depth_tab( V , E , direc ):
 
-    adj  = adj_tab( V , E , direc )
+    '''
+    The depth tab is short for depth table. which is a table resulted from a serch in depth executed over a given
+    graph. Each entry have a node from de graph as index, and the colums are:
+
+        Start -> The moment during the search when the given node and its descendants begin to be explored.
+        End   -> The instant when the node is done. I.E all its descendants were explored.
+        Depth -> How far from the DFS tree's root the node is.
+
+    this function have arguments analogous to adj_tab
+    '''
+    
+    # -----------------------------------------------------------------------------
+    # the method pop() removes and return the last element of a given list,
+    # so if is desired to the neighbors of a adj list to be explored in a 
+    # certain order, it is nescessary to reverse the sorted list from the
+    # function adj_tab()
+    adj = adj_tab( V , E , direc )
     for u in V:
         adj[ u ].reverse()
-
+    # -----------------------------------------------------------------------------
+    
     seq = [ -1 ]*3
     dtab = { u : seq.copy() for u in V }
     
@@ -62,8 +98,13 @@ def depth_tab( V , E , direc ):
         dtab[ v ][ START ] = clock
         dtab[ v ][ DEPTH ] = len( stack ) 
         stack.append( v )
+
+        # -----------------------------------------------------------------------------
+        # if the depth is zero, then it means that the node was already poped
+        # from the unvisited set
         if dtab[ v ][ DEPTH ]:
             unvisited.remove( v )
+        # -----------------------------------------------------------------------------
 
     while unvisited:
 
@@ -73,6 +114,8 @@ def depth_tab( V , E , direc ):
         while stack:
 
             u = stack.pop()
+
+            # no more neighbors -------------------------------------------------------
             if not adj[ u ]:
                 clock += 1
                 dtab[ u ][ END ] = clock
@@ -80,6 +123,8 @@ def depth_tab( V , E , direc ):
 
             stack.append( u )
             v = adj[ u ].pop()
+
+            # already explored -------------------------------------------------------
             if not( v in unvisited ):
                 continue
 
@@ -88,6 +133,11 @@ def depth_tab( V , E , direc ):
     return dtab
             
 def print_depth_tab( dtab ):
+
+    '''
+    representation of a depth tab, rows are sorted by the colomn START in ascending
+    order
+    '''
 
     nodes = list( dtab.keys() )
     nodes.sort( )
