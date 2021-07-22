@@ -3,7 +3,20 @@ import sys
 import os
 
 def build_from_file( filename ):
-    pass
+    
+    V = set()
+    E = set()
+
+    with open( filename ) as f:
+        d = ( f.readline() == "1" )
+        for line in f:
+            a , b = line.split()
+
+            V.add( a )
+            V.add( b )
+
+            E.add( ( a , b ) )
+    return d , V , E
 
 def build_from_cmd( ):
     
