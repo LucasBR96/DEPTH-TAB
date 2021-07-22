@@ -201,12 +201,10 @@ def build_dfstimeline( dep_tab ):
 
     Based on this information, the seach will have as timeline:
  
-        0-----------0 6 
-         1---1 2---2    
-          5-5   3-3     
-           7     4    
-
-    Note: ( timeline doesn't looks good, finish later )
+        \0**********************0/--66--
+        --\1******1/--\2******2/--------
+        ----\5**5/------\3**3/----------
+        ------77----------44------------
     '''
     
     # -----------------------------------------------------------------------------
@@ -220,7 +218,7 @@ def build_dfstimeline( dep_tab ):
     f2 = lambda x: dep_tab[ x ][ DEPTH ] + 1
     depth  = max( map( f2 , dep_tab.keys() ) )
     
-    seq =[ " " ]*width
+    seq =[ "--" ]*width
     mat = [ seq.copy() for x in range( depth ) ]
     # print( *mat, sep = "\n" )
     for node , ( s , e , d ) in dep_tab.items( ):
@@ -228,11 +226,19 @@ def build_dfstimeline( dep_tab ):
         # print( node , s , e , d )
         # print( mat[ d ] )
         # print()
+
+        if e == s + 1:
+            mat[ d ][ s ] = nstr*2
+            continue
+
         for i in range( s , e ):
-            if i == s or i == e - 1:
-                mat[ d ][ i ] = nstr
+            if i == s:
+                mat[ d ][ i ] = "\\" + nstr
                 continue
-            mat[ d ][ i ] = "-"
+            elif i == e - 1:
+                mat[ d ][ i ] = nstr + "/"
+                continue
+            mat[ d ][ i ] = "**"
 
     s = "\n".join( [ "".join( mat[ i ][:] ) for i in range( depth  ) ] )
     return s
@@ -241,7 +247,6 @@ def dfs_results( V , E , direc  ):
     
     if not V: return
     
-    print( "-"*25 )
     print( "\nTabela de Adj:\n" )
     tab = adj_tab( V , E , direc )
     print_adj_tab( tab )
@@ -291,7 +296,7 @@ def test_1( ):
         print( div )
         print( "Grafo " + t )
         
-        dfs_results( V , E , direc )
+        dfs_results( V , E , d )
 
 if __name__ == "__main__":
 
